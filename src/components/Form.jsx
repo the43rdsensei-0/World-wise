@@ -1,20 +1,12 @@
-// "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=0&longitude=0"
-
 import { useEffect, useState } from "react";
-import Message from '../components/Message'
-
-import styles from "./Form.module.css";
-import Button from "./Button";
-import BackButton from "./BackButton";
 import { useURLPosition } from "../hooks/useURLPosition";
 
-export function convertToEmoji(countryCode) {
-  const codePoints = countryCode
-    .toUpperCase()
-    .split("")
-    .map((char) => 127397 + char.charCodeAt());
-  return String.fromCodePoint(...codePoints);
-}
+import styles from "./Form.module.css";
+import Message from './Message'
+import Spinner from './Spinner'
+import Button from "./Button";
+import BackButton from "./BackButton";
+
 
 function Form() {
 
@@ -28,6 +20,14 @@ function Form() {
   const [geocodingError, setGeocodingError] = useState('')
 
   const URL = "https://api.bigdatacloud.net/data/reverse-geocode-client";
+
+  function convertToEmoji(countryCode) {
+    const codePoints = countryCode
+      .toUpperCase()
+      .split("")
+      .map((char) => 127397 + char.charCodeAt());
+    return String.fromCodePoint(...codePoints);
+  }
 
   useEffect(function() {
     async function fetchCityData() {
@@ -51,6 +51,8 @@ function Form() {
     }
     fetchCityData()
   }, [lat, lng])
+
+  if(isLoadingGeocoding) return <Spinner />
 
   if(geocodingError) return <Message message={geocodingError}/>
 
