@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 import {useGeolocation} from '../hooks/useGeolocation'
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import { useURLPosition } from '../hooks/useURLPosition';
 
 import styles from './Map.module.css'
 import { useCities } from '../contexts/CitiesContext';
 import Button from './Button';
 
 function Map() {
-  const [searchParams] = useSearchParams()
   const {cities} = useCities();
   const [mapPosition, setMapPosition] = useState([40, 0])
   const {isLoading: isLoadingPosition, position: geoPosition, getPosition} = useGeolocation()
-
-  const mapLat = searchParams.get('lat')
-  const mapLng = searchParams.get('lng')
+  const [mapLat, mapLng] = useURLPosition();
+  
+  
 
   useEffect(function() {
     if(mapLat && mapLng) setMapPosition([mapLat, mapLng])
