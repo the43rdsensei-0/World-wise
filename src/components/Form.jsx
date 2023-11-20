@@ -1,6 +1,7 @@
 // "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=0&longitude=0"
 
 import { useEffect, useState } from "react";
+import Message from '../components/Message'
 
 import styles from "./Form.module.css";
 import Button from "./Button";
@@ -24,6 +25,7 @@ function Form() {
   const [lat, lng] = useURLPosition();
   const [isLoadingGeocoding, setIsLoadingGeocoding] = useState();
   const [emoji, setEmoji] = useState('')
+  const [geocodingError, setGeocodingError] = useState('')
 
   const URL = "https://api.bigdatacloud.net/data/reverse-geocode-client";
 
@@ -31,20 +33,26 @@ function Form() {
     async function fetchCityData() {
       try {
         setIsLoadingGeocoding(true)
+        setGeocodingError('')
         const res = await fetch(`${URL}?latitude=${lat}&longitude=${lng}`);
         const data = await res.json();
         console.log(data);
+
+        if(!data.countryCode) throw new Error("That doesn't seem to be a city, Click somewhere else")
+
         setCityName(data.city || data.locality || '')
         setCountry(data.countryName)
         setEmoji(convertToEmoji(data.countryCode))
       } catch(error) {
-
+        setGeocodingError(error.message)
       } finally {
         setIsLoadingGeocoding(false)
       }
     }
     fetchCityData()
   }, [lat, lng])
+
+  if(geocodingError) return <Message message={geocodingError}/>
 
   return (
     <form className={styles.form}>
