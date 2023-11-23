@@ -35,6 +35,54 @@
         "lng": 13.376933665713324
       },
       "id": 98443197
+    },
+    {
+      "cityName": "Castello de la Plana",
+      "country": "Spain",
+      "emoji": "🇪🇸",
+      "date": "2023-11-23T06:23:30.655Z",
+      "notes": "",
+      "position": {
+        "lat": "39.98961566393212",
+        "lng": "-0.030899047851562503"
+      },
+      "id": 98443198
+    },
+    {
+      "cityName": "Vila-real",
+      "country": "Spain",
+      "emoji": "🇪🇸",
+      "date": "2023-11-23T06:38:06.782Z",
+      "notes": "W location",
+      "position": {
+        "lat": "39.93343343839839",
+        "lng": "-0.10093688964843751"
+      },
+      "id": 98443199
+    },
+    {
+      "cityName": "Onda",
+      "country": "Spain",
+      "emoji": "🇪🇸",
+      "date": "2023-11-23T06:39:05.166Z",
+      "notes": "another one!",
+      "position": {
+        "lat": "39.96080665909226",
+        "lng": "-0.25474548339843756"
+      },
+      "id": 98443200
+    },
+    {
+      "cityName": "Nules",
+      "country": "Spain",
+      "emoji": "🇪🇸",
+      "date": "2023-11-23T06:39:46.805Z",
+      "notes": "...",
+      "position": {
+        "lat": "39.84861229610178",
+        "lng": "-0.15243530273437503"
+      },
+      "id": 98443201
     }
   ]
 }
