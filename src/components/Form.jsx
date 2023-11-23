@@ -99,6 +99,7 @@ function Form() {
 
       <div className={styles.row}>
         <label htmlFor="date">When did you go to {cityName}?</label>
+        {/* replaced the date input with a datePicker from a third party lib */}
         <DatePicker id={'date'} selected={date} onChange={(date) => setDate(date)} dateFormat={'dd/MM/yyyy'}/>
       </div>
 
