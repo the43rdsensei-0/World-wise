@@ -41,7 +41,8 @@ function reducer(state, action) {
       return {
         ...state, 
         isLoading: false, 
-        cities: [...state.cities, action.payload] 
+        cities: [...state.cities, action.payload],
+        currentCity: action.payload,  
       }
 
     case 'city/deleted':
@@ -64,7 +65,7 @@ function reducer(state, action) {
 
 // eslint-disable-next-line react/prop-types
 function CitiesProvider({ children }) {
-  const [{cities, isLoading, currentCity}, dispatch] = useReducer(reducer, initialState)
+  const [{cities, isLoading, currentCity, error}, dispatch] = useReducer(reducer, initialState)
 
   // const [cities, setCities] = useState([]);
   // const [isLoading, setIsLoading] = useState(false);
@@ -86,6 +87,8 @@ function CitiesProvider({ children }) {
   }, []);
 
   async function getCity(id) {
+    if(Number(id) ===  currentCity.id) return;
+
     dispatch({type: 'loading'});
 
       try {
@@ -137,6 +140,7 @@ async function deleteCity(id) {
         cities,
         isLoading,
         currentCity,
+        error,
         getCity,
         createCity,
         deleteCity,
