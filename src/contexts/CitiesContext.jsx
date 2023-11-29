@@ -1,47 +1,106 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 
 const CitiesContext = createContext()
 const BASE_URL = 'http://localhost:8000'
 
+// refactoring the state management by coalescing the useState calls into a single useReducer call
+const initialState = {
+  cities: [],
+  isLoading: false,
+  currentCity: {},
+  error: '',
+}
+
+// below in the switch statement there's no need for a break since we used the return keyword, otherwise we would have used it
+
+// keynote: in this project we are passing the dispatch funtions into the our event handlers (deleteCity, createCity etc) which are passed to the components through the context api, this is one way to go about it. or we could pass the dispatch functions into the components themselves and create the event handlers inside of those component, that would mean that the context api would be passing the dispatch functions rather than the event handlers... capisce??
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'loading': 
+      return {
+        ...state,
+        isLoading: true,
+      }
+
+    case 'cities/loaded':
+      return {
+        ...state,
+        isLoading: false,
+        cities: action.payload
+      }
+    
+      case 'city/loaded':
+        return {
+          ...state,
+          isLoading: false,
+          currentCity: action.payload
+        }
+      
+    case 'city/created':
+      return {
+        ...state, 
+        isLoading: false, 
+        cities: [...state.cities, action.payload] 
+      }
+
+    case 'city/deleted':
+      return {
+        ...state, 
+        isLoading: false, 
+        cities: state.cities.filter((city) => city.id !== action.payload)
+      }
+
+    case 'rejected': 
+      return {
+      ...state,
+      isLoading: false,
+      error: action.payload
+      }
+
+    default: throw new Error('Unkown action type')
+  }
+}
 
 // eslint-disable-next-line react/prop-types
 function CitiesProvider({ children }) {
-  const [cities, setCities] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentCity, setCurrentCity] = useState({})
+  const [{cities, isLoading, currentCity}, dispatch] = useReducer(reducer, initialState)
+
+  // const [cities, setCities] = useState([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [currentCity, setCurrentCity] = useState({})
 
   useEffect(function() {
     async function fetchCities() {
+      dispatch({type: 'loading'});
+
       try {
-        setIsLoading(true)
         const res = await fetch(`${BASE_URL}/cities`);
         const data =  await res.json();
-        setCities(data)
-    } catch {
-      alert('there was an error loading data')
-    } finally {
-      setIsLoading(false)
-    }
+        dispatch({type: 'cities/loaded', payload: data});
+      } catch {
+        dispatch({type: 'rejected', payload: 'there was an error loading the cities...'})
+      }
   }
   fetchCities();
   }, []);
 
   async function getCity(id) {
+    dispatch({type: 'loading'});
+
       try {
-        setIsLoading(true)
         const res = await fetch(`${BASE_URL}/cities/${id}`);
         const data =  await res.json();
-        setCurrentCity(data)
+        dispatch({type: 'city/loaded', payload: data});
     } catch {
-      alert('there was an error loading data')
-    } finally {
-      setIsLoading(false)
-    }
+      dispatch({type: 'rejected', payload: 'there was an error loading the city...'})
+    } 
   }
 
   async function createCity(newCity ) {
+    dispatch({type: 'loading'});
+
     try {
-      setIsLoading(true)
       const res = await fetch(`${BASE_URL}/cities`, {
         method: 'POST',
         body: JSON.stringify(newCity),
@@ -51,27 +110,25 @@ function CitiesProvider({ children }) {
       });
       const data =  await res.json();
 
-      setCities(cities => [...cities, data])
+      dispatch({type: 'city/created', payload: data})
   } catch {
-    alert('there was an error creating city.')
-  } finally {
-    setIsLoading(false)
+    dispatch({type: 'rejected', payload: 'there was an error creating the city...'})
   }
 }
 
 async function deleteCity(id) {
+  dispatch({type: 'loading'});
+  
   try {
-    setIsLoading(true)
     await fetch(`${BASE_URL}/cities/${id}`, {
       method: 'DELETE',
     });
 
-    setCities(cities => cities.filter(city => city.id !== id))
+    dispatch({type: 'city/deleted', payload: id})
 } catch {
-  alert('there was an error deleting city.')
-} finally {
-  setIsLoading(false)
+  dispatch({type: 'rejected', payload: 'there was an error deleting the city...'})
 }
+
 }
 
   return (
