@@ -114,25 +114,25 @@ function CitiesProvider({ children }) {
       const data =  await res.json();
 
       dispatch({type: 'city/created', payload: data})
-  } catch {
-    dispatch({type: 'rejected', payload: 'there was an error creating the city...'})
+    } catch {
+      dispatch({type: 'rejected', payload: 'there was an error creating the city...'})
+    }
   }
-}
 
-async function deleteCity(id) {
-  dispatch({type: 'loading'});
+  async function deleteCity(id) {
+    dispatch({type: 'loading'});
   
-  try {
-    await fetch(`${BASE_URL}/cities/${id}`, {
-      method: 'DELETE',
-    });
+    try {
+      await fetch(`${BASE_URL}/cities/${id}`, {
+        method: 'DELETE',
+      });
 
-    dispatch({type: 'city/deleted', payload: id})
-} catch {
-  dispatch({type: 'rejected', payload: 'there was an error deleting the city...'})
-}
+      dispatch({type: 'city/deleted', payload: id})
+    } catch {
+      dispatch({type: 'rejected', payload: 'there was an error deleting the city...'})
+    }
 
-}
+  }
 
   return (
     <CitiesContext.Provider value={
