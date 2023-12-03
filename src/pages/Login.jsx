@@ -11,7 +11,6 @@ export default function Login() {
   const [password, setPassword] = useState("qwerty");
 
   const {login, isAuthenticated} = useAuth();
-  console.log(login, isAuthenticated);
   const navigate = useNavigate();
 
   useEffect(() => {
